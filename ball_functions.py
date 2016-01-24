@@ -1,28 +1,48 @@
 import math
-#from networktables import NetworkTable
-#ball = NetworkTable.getTable('GRIP/ball')
+#import pprint
+import networktables
+from networktables import NetworkTable
+ball = NetworkTable.getTable('/GRIP/ball')
 
 cameraW = 240
 cameraL = 320
 
 def calculateBallAngle():
-    #ballX = ball.getNumber("x")
-    #ballY = ball.getNumber("y")
-    ballX = 300
-    ballY = 143
+    '''try:
+        ballX = ball.getData("x")
+        ballY = ball.getData("y")
+        pprint.pprint(ballX)
+        ballX = ballX[0] #list(ballX)
+        ballY = ballY[0] #list(ballY)
+    except:
+        ballX = cameraL / 2
+        ballY = cameraW / 2
+        pass'''
 
-    robotX = cameraL/2 #Robot is assumed to virtually be in the middle of camera grid
+    ballX = networktables.NumberArray()
+    ballY = networktables.NumberArray()
+    ball.retrieveValue("x", ballX)
+    ball.retrieveValue("y", ballY)
 
-    #We create a right triangle between bottom of camera grid, the ball, and the robot
-    d = robotX - ballX #Length of bottom leg
-    adj = abs(d)
-    hyp = math.sqrt(ballY**2 + adj**2)
-    angle = math.degrees(math.acos((adj/hyp))) #Angle between robot and ball (acos() returns radians, so we convert to degrees)
+    if (len(ballX) == 1):
+      ballX = float(ballX[0])
+      ballY = float(ballY[0])
 
-    if (d < 0): #If bottom leg is negative ball is to the right
+      robotX = cameraL / 2 # Robot is assumed to virtually be in the middle of camera grid
+
+      '''We create a right triangle between bottom of camera grid, the ball, and the robot'''
+      d = robotX - ballX # Length of bottom leg
+      adj = abs(d)
+      hyp = math.sqrt(ballY**2 + adj**2)
+      angle = math.degrees(math.acos((adj/hyp))) # Angle between robot and ball (acos() returns radians, so we convert to degrees)
+
+      if (d < 0): # If bottom leg is negative ball is to the right
         angle = angle + 90
 
-    return angle
+      return angle
+
+    else: # If no value is found don't move
+      return 0
 
 def remap(x, oMin, oMax, nMin, nMax):
     #range check
