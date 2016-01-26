@@ -33,8 +33,10 @@ class MyRobot(wpilib.SampleRobot):
                 angle = bf.calculateBallAngle() # Get angle to ball
 
                 if (angle != 0):
-                    curve = bf.remap(angle, 0, 360, -1, 1) # Scale angle to value accepted by drive()
-                    self.robotDrive.drive(-0.75, curve)
+                    curve = bf.remap(angle, 180, 0, -1, 1) # Scale angle to value accepted by drive()
+                    power = abs(self.leftStick.getY()) * -1 # Able to adjust the power by moving the joystick either forward or backward
+
+                    self.robotDrive.drive(power, curve)
 
             else:
                 self.robotDrive.tankDrive(self.leftStick, self.rightStick) # Normal drive with joysticks

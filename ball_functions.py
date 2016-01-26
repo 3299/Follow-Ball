@@ -8,17 +8,6 @@ cameraW = 240
 cameraL = 320
 
 def calculateBallAngle():
-    '''try:
-        ballX = ball.getData("x")
-        ballY = ball.getData("y")
-        pprint.pprint(ballX)
-        ballX = ballX[0] #list(ballX)
-        ballY = ballY[0] #list(ballY)
-    except:
-        ballX = cameraL / 2
-        ballY = cameraW / 2
-        pass'''
-
     ballX = networktables.NumberArray()
     ballY = networktables.NumberArray()
     ball.retrieveValue("x", ballX)
@@ -38,6 +27,8 @@ def calculateBallAngle():
 
       if (d < 0): # If bottom leg is negative ball is to the right
         angle = angle + 90
+
+      print(angle)
 
       return angle
 
